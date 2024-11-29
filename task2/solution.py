@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 
 import requests
@@ -6,6 +7,8 @@ import csv
 
 BASE_URL = 'https://ru.wikipedia.org/'
 FiRST_URL = 'https://ru.wikipedia.org/wiki/Категория:Животные_по_алфавиту'
+
+russian_letters = re.compile('^[А-Яа-яЁё]$')
 
 
 def get_animal_list(url: str):
@@ -21,6 +24,8 @@ def get_animal_list(url: str):
             for animal in animals:
                 animal_name = animal.get('title')
                 first_letter = animal_name[0].upper()
+                if not russian_letters.match(first_letter):
+                    return letter_counts
                 letter_counts[first_letter] += 1
 
         next_page = soup.find('a', string='Следующая страница')
